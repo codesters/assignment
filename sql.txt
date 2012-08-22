@@ -1,0 +1,66 @@
+BEGIN;
+CREATE TABLE `home_teacher` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `tname` varchar(60) NOT NULL,
+    `dept` varchar(15) NOT NULL,
+    `email` varchar(75) NOT NULL
+)
+;
+CREATE TABLE `home_course` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `cname` varchar(50) NOT NULL,
+    `session_start` integer NOT NULL,
+    `session_end` integer NOT NULL
+)
+;
+CREATE TABLE `home_subject` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `sname` varchar(60) NOT NULL,
+    `course_id` integer NOT NULL,
+    `teacher_id` integer NOT NULL
+)
+;
+ALTER TABLE `home_subject` ADD CONSTRAINT `teacher_id_refs_id_7b408d45` FOREIGN KEY (`teacher_id`) REFERENCES `home_teacher` (`id`);
+ALTER TABLE `home_subject` ADD CONSTRAINT `course_id_refs_id_1ecfbb6d` FOREIGN KEY (`course_id`) REFERENCES `home_course` (`id`);
+CREATE TABLE `home_assignment` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `aname` varchar(60) NOT NULL,
+    `subject_id` integer NOT NULL,
+    `publication_date` date,
+    `last_submission_date` date
+)
+;
+ALTER TABLE `home_assignment` ADD CONSTRAINT `subject_id_refs_id_46c7acf3` FOREIGN KEY (`subject_id`) REFERENCES `home_subject` (`id`);
+CREATE TABLE `home_question` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `qname` varchar(200) NOT NULL,
+    `assignment_id` integer NOT NULL
+)
+;
+ALTER TABLE `home_question` ADD CONSTRAINT `assignment_id_refs_id_e70c04fe` FOREIGN KEY (`assignment_id`) REFERENCES `home_assignment` (`id`);
+CREATE TABLE `home_student` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `student_name` varchar(60) NOT NULL,
+    `course_id` integer NOT NULL,
+    `email` varchar(75) NOT NULL
+)
+;
+ALTER TABLE `home_student` ADD CONSTRAINT `course_id_refs_id_6ecaf232` FOREIGN KEY (`course_id`) REFERENCES `home_course` (`id`);
+CREATE TABLE `home_answer` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `question_id` integer NOT NULL,
+    `content` longtext NOT NULL,
+    `student_id` integer NOT NULL,
+    `submission_date` date
+)
+;
+ALTER TABLE `home_answer` ADD CONSTRAINT `question_id_refs_id_7aba1541` FOREIGN KEY (`question_id`) REFERENCES `home_question` (`id`);
+ALTER TABLE `home_answer` ADD CONSTRAINT `student_id_refs_id_2125058d` FOREIGN KEY (`student_id`) REFERENCES `home_student` (`id`);
+CREATE INDEX `home_subject_ff48d8e5` ON `home_subject` (`course_id`);
+CREATE INDEX `home_subject_e9e1ea3d` ON `home_subject` (`teacher_id`);
+CREATE INDEX `home_assignment_638462f1` ON `home_assignment` (`subject_id`);
+CREATE INDEX `home_question_482b57ab` ON `home_question` (`assignment_id`);
+CREATE INDEX `home_student_ff48d8e5` ON `home_student` (`course_id`);
+CREATE INDEX `home_answer_1f92e550` ON `home_answer` (`question_id`);
+CREATE INDEX `home_answer_42ff452e` ON `home_answer` (`student_id`);
+COMMIT;
